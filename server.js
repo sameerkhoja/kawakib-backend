@@ -10,12 +10,29 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/kawakib', {
+const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/kawakib';
+if (!process.env.MONGODB_URI) {
+  console.warn('Warning: MONGODB_URI environment variable is not set. Using default local MongoDB URI.');
+} else {
+  // Redact password for logging
+  const safeUri = mongoUri.replace(/:\w+@/, ':<redacted>@');
+  console.log('Using MongoDB URI:', safeUri);
+}
+
+mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 .then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB connection error:', err));
+.catch(err => {
+  console.error('MongoDB connection error:', err);
+  if (err.message) {
+    console.error('MongoDB error message:', err.message);
+  }
+  if (err.reason) {
+    console.error('MongoDB error reason:', err.reason);
+  }
+});
 
 // Routes
 app.use('/api/cardsets', require('./routes/cardsets'));
