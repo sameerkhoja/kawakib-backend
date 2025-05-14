@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: kawakib-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        value: mongodb+srv://sameerkhoja10:wfG4sfMEkacIjnp7@cluster0.frgmhkn.mongodb.net/kawakib?retryWrites=true&w=majority&appName=Cluster0
+      - key: NODE_ENV
+        value: production 
